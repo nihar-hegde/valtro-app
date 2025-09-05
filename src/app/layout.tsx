@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import Navbar from "@/components/layout/navbar";
+import { ConditionalNavbar } from "@/components/layout/conditional-navbar";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -30,8 +30,10 @@ export default function RootLayout({
 				<body
 					className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 				>
-					<Navbar />
-					<main className="p-2">{children}</main>
+					<ConditionalNavbar />
+					<div className="min-h-screen">
+						{children}
+					</div>
 				</body>
 			</html>
 		</ClerkProvider>
