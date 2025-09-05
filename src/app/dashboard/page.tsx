@@ -1,81 +1,57 @@
 'use client';
 
-import { OnboardingFlow } from './onboarding-flow';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@clerk/nextjs';
-import { createApiClient, ApiError } from '@/lib/api';
+import { createApiClient } from '@/lib/api';
 import { Loader2 } from 'lucide-react';
-import { useMemo } from 'react';
-import { DashboardStats } from '@/components/dashboard/dashboard-stats';
-import { OrganizationOverview } from '@/components/dashboard/organization-overview';
-import { ProjectsList } from '@/components/dashboard/projects-list';
-
-function MainDashboard() {
-	return (
-		<div className="p-4">
-			<main className="container mx-auto px-4 py-8 space-y-8">
-				<header className="mb-8">
-					<h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-					<p className="text-muted-foreground">
-						Welcome to your Valtro dashboard! Manage your organization and projects.
-					</p>
-				</header>
-				
-				{/* Stats Overview */}
-				<section>
-					<h2 className="text-2xl font-semibold mb-4">Overview</h2>
-					<DashboardStats />
-				</section>
-				
-				{/* Organization Details */}
-				<section>
-					<OrganizationOverview />
-				</section>
-				
-				{/* Projects List */}
-				<section>
-					<ProjectsList />
-				</section>
-			</main>
-		</div>
-	);
-}
+import { ProjectEmptyState } from '@/components/dashboard/project-empty-state';
 
 const DashboardPage = () => {
-	const { getToken, isLoaded } = useAuth();
-	const apiClient = useMemo(() => createApiClient(getToken), [getToken]);
+  const { getToken, isLoaded } = useAuth();
+  const apiClient = useMemo(() => createApiClient(getToken), [getToken]);
 
-	const { data: onboardingStatus, isLoading } = useQuery({
-		queryKey: ['onboarding-status'],
-		queryFn: () => apiClient.checkOnboardingStatus(),
-		enabled: isLoaded && !!getToken,
-		retry: (failureCount, error) => {
-			// Don't retry on authentication errors
-			if (error instanceof ApiError && error.status === 401) {
-				return false;
-			}
-			return failureCount < 2;
-		},
-	});
+  const { data: orgData, isLoading: orgLoading } = useQuery({
+    queryKey: ['organization-with-projects'],
+    queryFn: () => apiClient.getOrganizationWithProjects(),
+    enabled: isLoaded && !!getToken,
+    retry: 2,
+  });
 
-	if (!isLoaded || isLoading) {
-		return (
-			<div className="flex items-center justify-center min-h-[60vh]">
-				<div className="flex flex-col items-center gap-4">
-					<Loader2 className="h-8 w-8 animate-spin text-primary" />
-					<p className="text-muted-foreground">Loading your dashboard...</p>
-				</div>
-			</div>
-		);
-	}
+  // Loading state
+  if (orgLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">Loading project data...</p>
+        </div>
+      </div>
+    );
+  }
 
-	// Show onboarding flow if user hasn't completed onboarding
-	if (!onboardingStatus?.hasOrganization) {
-		return <OnboardingFlow />;
-	}
+  // Find first project
+  const selectedProject = orgData?.projects?.[0];
 
-	// Show main dashboard if user has completed onboarding
-	return <MainDashboard />;
+  if (!selectedProject) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-lg font-semibold mb-2">No Projects Found</h2>
+          <p className="text-muted-foreground">
+            Create your first project to get started.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <ProjectEmptyState 
+      projectName={selectedProject.name}
+      apiKey={selectedProject.api_key}
+    />
+  );
 };
 
 export default DashboardPage;

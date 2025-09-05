@@ -34,9 +34,7 @@ export default function RootLayout({
 				>
 					<QueryProvider>
 						<ConditionalNavbar />
-						<div className="min-h-screen">
-							{children}
-						</div>
+						{children}
 						<Toaster />
 					</QueryProvider>
 				</body>

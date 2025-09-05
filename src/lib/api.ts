@@ -177,6 +177,36 @@ export const createApiClient = (getToken: () => Promise<string | null>) => {
       const response = await makeRequest<ApiOrganizationWithProjectsResponse>('/api/v1/organizations/with-projects');
       return response.data;
     },
+    createOrganization: async (name: string): Promise<Organization> => {
+      const response = await makeRequest<{ message: string; data: Organization }>('/api/v1/organizations', {
+        method: 'POST',
+        body: JSON.stringify({ name })
+      });
+      return response.data;
+    },
+    getOrganization: async (id: string): Promise<Organization> => {
+      const response = await makeRequest<{ message: string; data: Organization }>(`/api/v1/organizations/${id}`);
+      return response.data;
+    },
+    updateOrganization: async (id: string, name: string): Promise<Organization> => {
+      const response = await makeRequest<{ message: string; data: Organization }>(`/api/v1/organizations/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ name })
+      });
+      return response.data;
+    },
+    patchOrganization: async (id: string, updates: Partial<Pick<Organization, 'name'>>): Promise<Organization> => {
+      const response = await makeRequest<{ message: string; data: Organization }>(`/api/v1/organizations/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(updates)
+      });
+      return response.data;
+    },
+    deleteOrganization: async (id: string): Promise<void> => {
+      await makeRequest(`/api/v1/organizations/${id}`, {
+        method: 'DELETE'
+      });
+    },
     createProject: async (organization_id: string, name: string): Promise<Project> => {
       const response = await makeRequest<ApiProjectResponse>('/api/v1/projects', {
         method: 'POST',
