@@ -65,7 +65,7 @@ export function PricingSection() {
 						Simple, Transparent Pricing
 					</h2>
 					<p className="mt-4 text-lg text-muted-foreground">
-						Choose the plan that fits your team's needs. Start free and scale as you grow.
+						Choose the plan that fits your team&apos;s needs. Start free and scale as you grow.
 					</p>
 				</div>
 
@@ -136,7 +136,7 @@ export function PricingSection() {
 					<p className="text-sm text-muted-foreground">
 						All plans include our core logging features. Need something custom?{" "}
 						<Link href="#contact" className="font-medium text-purple-400 hover:text-purple-300">
-							Let's talk
+							Let&apos;s talk
 						</Link>
 					</p>
 				</div>

@@ -35,7 +35,7 @@ export function Footer() {
 							</span>
 						</div>
 						<p className="max-w-md text-sm text-muted-foreground">
-							The clear path through your application's noise. Modern logging and error monitoring for developers who ship fast.
+							The clear path through your application&apos;s noise. Modern logging and error monitoring for developers who ship fast.
 						</p>
 						<div className="flex space-x-4">
 							<Link

@@ -99,7 +99,7 @@ export function FeatureShowcase() {
 						<div className="space-y-2">
 							<div className="rounded border bg-muted/50 p-2">
 								<div className="text-xs font-mono text-muted-foreground">
-									level:error user.id:"12345" correlation_id:*
+									level:error user.id:&quot;12345&quot; correlation_id:*
 								</div>
 							</div>
 							<div className="space-y-1">

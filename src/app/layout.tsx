@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ConditionalNavbar } from "@/components/layout/conditional-navbar";
+import { QueryProvider } from "@/components/providers/query-provider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -30,10 +32,13 @@ export default function RootLayout({
 				<body
 					className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 				>
-					<ConditionalNavbar />
-					<div className="min-h-screen">
-						{children}
-					</div>
+					<QueryProvider>
+						<ConditionalNavbar />
+						<div className="min-h-screen">
+							{children}
+						</div>
+						<Toaster />
+					</QueryProvider>
 				</body>
 			</html>
 		</ClerkProvider>
